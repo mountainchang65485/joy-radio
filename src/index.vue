@@ -1,9 +1,12 @@
 <template>
+<keep-alive>
   <div class="container">
          <featureList/>
          <hotList/>
          <chartList/>
   </div>
+
+</keep-alive>
 </template>
 
 <script>

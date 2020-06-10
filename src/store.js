@@ -13,11 +13,7 @@ var config ={
       Authorization:"Bearer "+token,
    }
 };
-var ytConfig ={
-    params: {
-    key: 'AIzaSyBT3AL5luLl-NgoS5oVWgcfdP28FmbzLK8'
-  }
-};
+
 
   
 // var player;
@@ -31,9 +27,12 @@ const store = new Vuex.Store({
     state:{
       featuredLists:[],
       playList:[],
+      listInfo:[],
+      ytData:[],
       metaTitle: '',
       ID_str:'',
       KKboxPlayID:'',
+      musicID:'',
 
     },
 
@@ -51,7 +50,13 @@ const store = new Vuex.Store({
         },
         setPlayList(state,payload){
             state.playList=payload;
-        }
+        },
+        setListInfo(state,payload){
+            state.listInfo=payload;
+        },
+        setMusicID(state,payload){
+            state.musicID=payload;
+        },
 
 
     },
@@ -67,14 +72,43 @@ const store = new Vuex.Store({
         },
         fetchPlayList({commit}){
             var IDUrl=location.href;
-            var ID_str=IDUrl.split('id?=')[1];
+            var ID_str=IDUrl.split('/playList/')[1];
             axios.get(`https://api.kkbox.com/v1.1/featured-playlists/${ID_str}?&territory=TW`,config)
              .then(res=> {
                 console.log(res);
                 // commit('setKKboxPlayID',res.data.data);
-                commit('setPlayList',res.data);
+                commit('setPlayList',res.data.tracks.data);
             }); 
         },
+
+        fetchListInfo({commit}){
+            var IDUrl=location.href;
+            var ID_str=IDUrl.split('/playList/')[1];
+            axios.get(`https://api.kkbox.com/v1.1/featured-playlists/${ID_str}?&territory=TW`,config)
+             .then(res=> {
+                console.log(res);
+                // commit('setKKboxPlayID',res.data.data);
+                commit('setListInfo',res.data);
+            }); 
+        },
+
+        fetchMusicID({commit}){
+            
+
+        },
+
+        // fetchYoutube(){
+        //     var url =`https://www.googleapis.com/youtube/v3/search?q=${songInfo}${artistInfo}&type=video&part=snippet`;
+        //     var ytConfig={
+        //          params: {
+        //          key: 'AIzaSyBT3AL5luLl-NgoS5oVWgcfdP28FmbzLK8'
+        //        }
+        //     }
+        //     axios.get(`${url}`,ytConfig)
+        //     .then(res=>{
+
+        //     })
+        // },
         
         getMetaTitle(context, title) {
             context.commit('SETTITLE', title);
@@ -99,6 +133,12 @@ const store = new Vuex.Store({
         },
         playList:state=>{
             return state.playList;
+        },
+
+        player:state=>{
+            return `
+              <iframe :src="https://www.youtube.com/embed/${state.musicID}?autoplay=1" height='60' width='100' frameBorder="0" allow="autoplay"></iframe>
+            `
         },
 
     },

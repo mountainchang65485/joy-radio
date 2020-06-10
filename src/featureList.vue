@@ -60,7 +60,9 @@ export default {
     
     playList(item) {
       this.$store.commit('setKKboxPlayID', item);
-      this.$router.push(`/playList/id?=${item}`);
+      this.$router.push(`/playList/${item}`);
+      this.$store.dispatch('fetchListInfo');
+      this.$store.dispatch('fetchPlayList');
 
     },
   },

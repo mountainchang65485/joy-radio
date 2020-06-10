@@ -1,7 +1,7 @@
 <template>
   <div class="player-wrap">
     <div id="player">
-        <iframe :src="`https://www.youtube.com/embed/${musicID}?autoplay=1`" frameBorder="0" allow="autoplay"></iframe>
+        <iframe :src="`https://www.youtube.com/embed/${musicID}?autoplay=1`" height='60' width='100' frameBorder="0" allow="autoplay"></iframe>
     </div>
     <div id="playBar">
       <div id="barbtn" class="play-icon">
@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex';
+import {mapGetters,mapActions} from 'vuex';
 export default{
   data() {
     return {
@@ -27,22 +27,20 @@ export default{
     };
   },
   
-  computed: {
-    ...mapGetters([ 'metaTitle']),
-  },
+  // computed: {
+  //   ...mapGetters([ 'metaTitle']),
+  // },
   methods:{
-      
-    playMusic(item) {
-        // this.$store.commit('LOADING', true);
-        const playTitle = item.name;
-        const url = `https://www.googleapis.com/youtube/v3/search?key=${process.env.VUE_APP_GAPIKEY}&part=snippet&type=video&q=${playTitle}`;
-        this.$http.get(url).then((res) => {
-        const cacheYT = res.data.items[0].snippet;
-        this.YTData = cacheYT;
-        this.musicID = res.data.items[0].id.videoId;
-        // this.$store.commit('LOADING', false);
-      });
-    },
+    // playMusic(list) {
+    //     const playTitle = `${list.name}+${list.artist.name}`;
+    //     const ytKey = 'AIzaSyBT3AL5luLl-NgoS5oVWgcfdP28FmbzLK8';
+    //     const url = `https://www.googleapis.com/youtube/v3/search?key=${ytKey}&part=snippet&type=video&q=${playTitle}`;
+    //     this.$http.get(url).then((res) => {
+    //     const cacheYT = res.data.items[0].snippet;
+    //     this.YTData = cacheYT;
+    //     this.musicID = res.data.items[0].id.videoId;
+    //   });
+    // },
     
     getTitle() {
       this.$store.dispatch('getMetaTitle', this.$route.meta.title);
