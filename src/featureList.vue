@@ -63,7 +63,6 @@ export default {
       this.$router.push(`/playList/${item}`);
       this.$store.dispatch('fetchListInfo');
       this.$store.dispatch('fetchPlayList');
-
     },
   },
   mounted(){

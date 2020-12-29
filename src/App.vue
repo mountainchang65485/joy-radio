@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <div class="loading" v-show="loading"></div>
     <h1>首頁</h1>
     <div class="content">
       <keep-alive>
@@ -11,6 +12,7 @@
 </template>
 
 <script>
+import { mapState, mapActions } from 'vuex';
 // import index from './index';
 import player from './player.vue'
 
@@ -18,6 +20,15 @@ export default {
   components:{
     //  index,
      player,
+  },
+  // mounted() {
+  //   this.removeLoading()
+  // },
+  computed: {
+    ...mapState(['loading'])
+  },
+  methods: {
+    ...mapActions(['removeLoading'])
   },
   metaInfo: {
      meta: [
@@ -43,6 +54,14 @@ body{
   color: #2c3e50;
   // margin-top: 60px;
   width: 100%;
+}
+
+.loading{
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: blueviolet;
+  z-index: 999;
 }
 
 h1, h2 {

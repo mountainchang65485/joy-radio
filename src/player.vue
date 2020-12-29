@@ -1,7 +1,7 @@
 <template>
   <div class="player-wrap">
     <div id="player">
-        <iframe :src="`https://www.youtube.com/embed/${musicID}?autoplay=1`" height='60' width='100' frameBorder="0" allow="autoplay"></iframe>
+        <iframe :src="`https://www.youtube.com/embed/${musicID}?autoplay=1`" height="60" width="120" frameBorder="0" allow="autoplay"></iframe>
     </div>
     <div id="playBar">
       <div id="barbtn" class="play-icon">
@@ -23,13 +23,14 @@ export default{
       hotDate: '',
       musicList: '',
       YTData: [],
-      musicID: '4n5yIXzY3TYupQyjvw',
+      // musicID: '4n5yIXzY3TYupQyjvw',
     };
   },
   
-  // computed: {
-  //   ...mapGetters([ 'metaTitle']),
-  // },
+  computed: {
+    ...mapGetters([ 'metaTitle','musicID']),
+
+  },
   methods:{
     // playMusic(list) {
     //     const playTitle = `${list.name}+${list.artist.name}`;
@@ -48,9 +49,8 @@ export default{
       
   },
 
-}
-
-   
+};
+ 
 </script>
 <style lang="scss" scoped>
  
@@ -67,12 +67,14 @@ export default{
         bottom:1em;
         left:1em;
         z-index: 999;
+        transform: scale(1);
     }
     
     #player:hover {
       width: 450px;
       height: 270px;
       transition: 80ms;
+      transform: scale(1.07);
     }
     .icon {
       color: white;
@@ -85,9 +87,7 @@ export default{
     #play {
       font-size: 35px;
     }
-    #play:hover {
-      transform: scale(1.07);
-    }
+
     .play-icon {
       height: 100%;
       display:  flex;

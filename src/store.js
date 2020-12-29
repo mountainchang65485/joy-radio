@@ -3,11 +3,14 @@ import Vuex from 'vuex';
 
 import axios from 'axios';
 import VueAxios from 'vue-axios';
+
+import jQuery from 'jquery';
+window.$ = window.jQuery = jQuery
 Vue.use(Vuex)
 var ID_str;
 var featuredList_Url='https://api.kkbox.com/v1.1/featured-playlists?territory=TW&limit=20';
 var openUrl = `https://api.kkbox.com/v1.1/featured-playlists/${ID_str}?&territory=TW`; 
-var token='lW4SbjGAF9751GctPa_QsA==';
+var token='6hhCbgpKInqq2FwBOMcaig==';
 var config ={
    headers:{
       Authorization:"Bearer "+token,
@@ -33,6 +36,7 @@ const store = new Vuex.Store({
       ID_str:'',
       KKboxPlayID:'',
       musicID:'',
+      loading: false
 
     },
 
@@ -40,7 +44,10 @@ const store = new Vuex.Store({
         setListData(state,featured){
            state.featuredLists=featured;
         },
-        
+        setLoading(state, status) {
+            console.log(status);
+            state.loading = status
+        },
         SETTITLE(state, payload) {
            state.metaTitle = payload;
         },
@@ -57,11 +64,20 @@ const store = new Vuex.Store({
         setMusicID(state,payload){
             state.musicID=payload;
         },
+        setYTData(state,ytData){
+           state.ytData=ytData;
+        }
 
 
     },
 
     actions:{
+        getLoading({commit}, status) {
+            commit('setLoading', status)
+        },
+        removeLoading({commit}) {
+            commit('setLoading', false)
+        },
         fetchFeature({commit}){
             axios.get(`${featuredList_Url}`,config)
              .then(res=> {
@@ -73,11 +89,13 @@ const store = new Vuex.Store({
         fetchPlayList({commit}){
             var IDUrl=location.href;
             var ID_str=IDUrl.split('/playList/')[1];
+            commit('setLoading', true)
             axios.get(`https://api.kkbox.com/v1.1/featured-playlists/${ID_str}?&territory=TW`,config)
              .then(res=> {
                 console.log(res);
                 // commit('setKKboxPlayID',res.data.data);
                 commit('setPlayList',res.data.tracks.data);
+                commit('setLoading', false)
             }); 
         },
 
@@ -92,9 +110,32 @@ const store = new Vuex.Store({
             }); 
         },
 
-        fetchMusicID({commit}){
-            
-
+        // playMusic(item) {
+        //     this.$store.commit('setKKboxPlayID', item);
+        //     const playTitle = `${item.name}+${item.artist}`;
+        //     const ytKey = 'AIzaSyBT3AL5luLl-NgoS5oVWgcfdP28FmbzLK8';
+        //     const url = `https://www.googleapis.com/youtube/v3/search?key=${ytKey}&part=snippet&type=video&q=${playTitle}`;
+        //     this.$http.get(url).then((res) => {
+        //     const cacheYT = res.data.items[0].snippet;
+        //     this.YTData = cacheYT;
+        //     this.musicID = res.data.items[0].id.videoId;
+        //     item.commit('setMusicID',this.musicID);
+        //   });
+        // },YT
+        playMusic({commit},value) {
+            console.log('value',value);
+            let playName = value.album.artist.name; 
+            let playArtist = value.name; 
+            const playTitle = `${playName}+${playArtist}`;
+            const ytKey = 'AIzaSyBT3AL5luLl-NgoS5oVWgcfdP28FmbzLK8';
+            const url = `https://www.googleapis.com/youtube/v3/search?key=${ytKey}&part=snippet&type=video&q=${playTitle}`;
+            console.log(url);
+            axios.get(url).then((res) => {
+            const cacheYT = res.data.items[0].snippet;
+            const musicID = res.data.items[0].id.videoId;
+            commit('setMusicID',musicID);
+            commit('setYTData',cacheYT);
+          });
         },
 
         // fetchYoutube(){
@@ -133,6 +174,10 @@ const store = new Vuex.Store({
         },
         playList:state=>{
             return state.playList;
+        },
+
+        musicID:state=>{
+            return state.musicID;
         },
 
         player:state=>{
